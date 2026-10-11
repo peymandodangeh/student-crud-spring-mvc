@@ -59,3 +59,17 @@ src/main/webapp/resources/css/         # استایل
 | GET | `/students/{id}/edit` | فرم ویرایش |
 | POST | `/students/{id}` | ذخیره‌ی ویرایش |
 | POST | `/students/{id}/delete` | حذف |
+| GET | `/courses` | فهرست دروس |
+| GET | `/courses/{id}` | مشاهده‌ی درس و دانشجویان ثبت‌نام‌شده |
+| GET/POST | `/courses/new`، `/courses` | افزودن درس |
+| GET/POST | `/courses/{id}/edit`، `/courses/{id}` | ویرایش درس |
+| POST | `/courses/{id}/delete` | حذف درس |
+| POST | `/students/{id}/courses` | اخذ درس (پارامتر `courseId`) |
+| POST | `/students/{id}/courses/{courseId}/delete` | حذف درس از برنامه‌ی دانشجو |
+
+## جلسات
+
+| جلسه | برنچ | موضوع |
+|------|------|-------|
+| ۱ | `main` | CRUD دانشجو با Spring MVC و JSP |
+| ۳ | `session-03` | افزودن درس و رابطه‌ی چندبه‌چند — [طرح درس](docs/session-03.md) |
