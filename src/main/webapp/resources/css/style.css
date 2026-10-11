@@ -25,7 +25,11 @@ body {
 .container { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
 
 .topbar { background: var(--primary); color: #fff; padding: 14px 0; margin-bottom: 24px; }
+.topbar .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .brand { color: #fff; text-decoration: none; font-weight: 700; font-size: 1.1rem; }
+.nav { display: flex; gap: 4px; }
+.nav a { color: #fff; text-decoration: none; padding: 4px 12px; border-radius: 6px; }
+.nav a:hover { background: rgba(255, 255, 255, .15); }
 
 .page-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 h1 { font-size: 1.4rem; margin: 0 0 16px; }
@@ -52,12 +56,12 @@ h1 { font-size: 1.4rem; margin: 0 0 16px; }
 .search { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .search input { flex: 1; min-width: 200px; }
 
-input[type=text], input[type=email], input:not([type]) {
+input[type=text], input[type=email], input:not([type]), select {
     width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
     font: inherit; background: #fff;
 }
-input:focus { outline: 2px solid #bfdbfe; border-color: var(--primary); }
-input.invalid { border-color: var(--danger); }
+input:focus, select:focus { outline: 2px solid #bfdbfe; border-color: var(--primary); }
+input.invalid, select.invalid { border-color: var(--danger); }
 
 .table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
 table { width: 100%; border-collapse: collapse; }

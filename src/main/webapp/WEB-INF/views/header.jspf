@@ -13,6 +13,10 @@
 <header class="topbar">
     <div class="container">
         <a class="brand" href="<c:url value='/students'/>">سامانه مدیریت دانشجویان</a>
+        <nav class="nav">
+            <a href="<c:url value='/students'/>">دانشجویان</a>
+            <a href="<c:url value='/courses'/>">دروس</a>
+        </nav>
     </div>
 </header>
 <main class="container">
