@@ -44,6 +44,12 @@ public class StudentRepository {
                 ROW_MAPPER, like, like, like, like, like);
     }
 
+    /** Students enrolled in a course. */
+    public List<Student> findByCourseId(long courseId) {
+        return jdbc.query(SELECT + " JOIN enrollment e ON e.student_id = id WHERE e.course_id = ? ORDER BY last_name",
+                ROW_MAPPER, courseId);
+    }
+
     public Optional<Student> findById(long id) {
         return jdbc.query(SELECT + " WHERE id = ?", ROW_MAPPER, id).stream().findFirst();
     }
