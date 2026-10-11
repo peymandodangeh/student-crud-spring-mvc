@@ -24,4 +24,38 @@
     </div>
 </div>
 
+<%-- Students enrolled in this course (many-to-many) --%>
+<div class="section-head">
+    <h2>دانشجویان ثبت‌نام شده</h2>
+    <span class="badge">${students.size()} نفر</span>
+</div>
+
+<c:choose>
+    <c:when test="${empty students}">
+        <div class="card empty">هنوز دانشجویی این درس را اخذ نکرده است.</div>
+    </c:when>
+    <c:otherwise>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>شماره دانشجویی</th>
+                    <th>نام و نام خانوادگی</th>
+                    <th>رشته تحصیلی</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach var="s" items="${students}">
+                    <tr>
+                        <td class="ltr"><c:out value="${s.studentNumber}"/></td>
+                        <td><a href="<c:url value='/students/${s.id}'/>"><c:out value="${s.firstName} ${s.lastName}"/></a></td>
+                        <td><c:out value="${empty s.major ? '-' : s.major}"/></td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </c:otherwise>
+</c:choose>
+
 <%@ include file="footer.jspf" %>

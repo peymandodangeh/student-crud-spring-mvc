@@ -1,9 +1,12 @@
 package com.example.student.controller;
 
+import com.example.student.model.Course;
 import com.example.student.model.Student;
+import com.example.student.service.EnrollmentService;
 import com.example.student.service.StudentNotFoundException;
 import com.example.student.service.StudentService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -31,9 +34,11 @@ public class StudentController {
     private static final String DUPLICATE_NUMBER = "این شماره دانشجویی قبلاً ثبت شده است";
 
     private final StudentService service;
+    private final EnrollmentService enrollmentService;
 
-    public StudentController(StudentService service) {
+    public StudentController(StudentService service, EnrollmentService enrollmentService) {
         this.service = service;
+        this.enrollmentService = enrollmentService;
     }
 
     @InitBinder
@@ -52,10 +57,15 @@ public class StudentController {
         return LIST_VIEW;
     }
 
-    /** Read: details of a single student. */
+    /** Read: details of a single student, with enrolled courses. */
     @GetMapping("/{id}")
     public String view(@PathVariable long id, Model model) {
         model.addAttribute("student", service.get(id));
+        List<Course> courses = enrollmentService.coursesOf(id);
+        model.addAttribute("courses", courses);
+        model.addAttribute("totalUnits", EnrollmentService.totalUnits(courses));
+        model.addAttribute("maxUnits", EnrollmentService.MAX_UNITS);
+        model.addAttribute("availableCourses", enrollmentService.availableCoursesFor(id));
         return "student-view";
     }
 

@@ -3,6 +3,7 @@ package com.example.student.controller;
 import com.example.student.model.Course;
 import com.example.student.service.CourseNotFoundException;
 import com.example.student.service.CourseService;
+import com.example.student.service.EnrollmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.dao.DuplicateKeyException;
@@ -29,9 +30,11 @@ public class CourseController {
     private static final String DUPLICATE_CODE = "این کد درس قبلاً ثبت شده است";
 
     private final CourseService service;
+    private final EnrollmentService enrollmentService;
 
-    public CourseController(CourseService service) {
+    public CourseController(CourseService service, EnrollmentService enrollmentService) {
         this.service = service;
+        this.enrollmentService = enrollmentService;
     }
 
     @InitBinder
@@ -47,10 +50,11 @@ public class CourseController {
         return "course-list";
     }
 
-    /** Read: details of a single course. */
+    /** Read: details of a single course, with enrolled students. */
     @GetMapping("/{id}")
     public String view(@PathVariable long id, Model model) {
         model.addAttribute("course", service.get(id));
+        model.addAttribute("students", enrollmentService.studentsOf(id));
         return "course-view";
     }
 
