@@ -18,6 +18,7 @@
         <a class="btn btn-warning" href="<c:url value='/courses/${course.id}/edit'/>">ویرایش</a>
         <form method="post" action="<c:url value='/courses/${course.id}/delete'/>"
               onsubmit="return confirm('با حذف درس، ثبت‌نام دانشجویان در آن هم حذف می‌شود. ادامه می‌دهید؟');">
+            <sec:csrfInput/>
             <button type="submit" class="btn btn-danger">حذف</button>
         </form>
         <a class="btn btn-link" href="<c:url value='/courses'/>">بازگشت به فهرست</a>

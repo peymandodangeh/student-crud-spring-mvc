@@ -54,6 +54,7 @@
                             <a class="btn btn-sm btn-warning" href="<c:url value='/students/${s.id}/edit'/>">ویرایش</a>
                             <form method="post" action="<c:url value='/students/${s.id}/delete'/>"
                                   onsubmit="return confirm('آیا از حذف این دانشجو مطمئن هستید؟');">
+                                <sec:csrfInput/>
                                 <button type="submit" class="btn btn-sm btn-danger">حذف</button>
                             </form>
                         </td>

@@ -29,6 +29,7 @@
         <a class="btn btn-warning" href="<c:url value='/students/${student.id}/edit'/>">ویرایش</a>
         <form method="post" action="<c:url value='/students/${student.id}/delete'/>"
               onsubmit="return confirm('آیا از حذف این دانشجو مطمئن هستید؟');">
+            <sec:csrfInput/>
             <button type="submit" class="btn btn-danger">حذف</button>
         </form>
         <a class="btn btn-link" href="<c:url value='/students'/>">بازگشت به فهرست</a>
@@ -65,6 +66,7 @@
                         <td class="actions">
                             <form method="post" action="<c:url value='/students/${student.id}/courses/${course.id}/delete'/>"
                                   onsubmit="return confirm('این درس از برنامه‌ی دانشجو حذف شود؟');">
+                                <sec:csrfInput/>
                                 <button type="submit" class="btn btn-sm btn-danger">حذف درس</button>
                             </form>
                         </td>
@@ -79,6 +81,7 @@
 <c:choose>
     <c:when test="${not empty availableCourses}">
         <form class="card enroll" method="post" action="<c:url value='/students/${student.id}/courses'/>">
+            <sec:csrfInput/>
             <label for="courseId">اخذ درس جدید:</label>
             <select id="courseId" name="courseId" required>
                 <option value="">انتخاب درس...</option>

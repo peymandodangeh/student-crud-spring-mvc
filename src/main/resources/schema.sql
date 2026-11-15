@@ -14,6 +14,17 @@ CREATE TABLE IF NOT EXISTS course (
     units  INT          NOT NULL
 );
 
+-- Login accounts. A STUDENT account is linked to its student row.
+CREATE TABLE IF NOT EXISTS app_user (
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username   VARCHAR(50)  NOT NULL UNIQUE,
+    password   VARCHAR(100) NOT NULL,
+    role       VARCHAR(20)  NOT NULL,
+    student_id BIGINT UNIQUE,
+    enabled    BOOLEAN      NOT NULL DEFAULT TRUE,
+    FOREIGN KEY (student_id) REFERENCES student (id) ON DELETE CASCADE
+);
+
 -- Many-to-many: which student is enrolled in which course
 CREATE TABLE IF NOT EXISTS enrollment (
     student_id BIGINT NOT NULL,

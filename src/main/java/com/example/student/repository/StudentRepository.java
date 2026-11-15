@@ -50,6 +50,12 @@ public class StudentRepository {
                 ROW_MAPPER, courseId);
     }
 
+    /** Students that have no login account yet. */
+    public List<Student> findWithoutAccount() {
+        return jdbc.query(SELECT + " WHERE id NOT IN (SELECT student_id FROM app_user WHERE student_id IS NOT NULL)",
+                ROW_MAPPER);
+    }
+
     public Optional<Student> findById(long id) {
         return jdbc.query(SELECT + " WHERE id = ?", ROW_MAPPER, id).stream().findFirst();
     }

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -12,11 +13,25 @@
 <body>
 <header class="topbar">
     <div class="container">
-        <a class="brand" href="<c:url value='/students'/>">سامانه مدیریت دانشجویان</a>
-        <nav class="nav">
-            <a href="<c:url value='/students'/>">دانشجویان</a>
-            <a href="<c:url value='/courses'/>">دروس</a>
-        </nav>
+        <a class="brand" href="<c:url value='/'/>">سامانه مدیریت دانشجویان</a>
+        <sec:authorize access="isAuthenticated()">
+            <nav class="nav">
+                <a href="<c:url value='/students'/>">دانشجویان</a>
+                <a href="<c:url value='/courses'/>">دروس</a>
+            </nav>
+            <div class="user">
+                <%-- principal = the SecurityUser returned by AppUserDetailsService --%>
+                <sec:authentication property="principal" var="currentUser"/>
+                <span>
+                    <c:out value="${currentUser.displayName}"/>
+                    <span class="role-badge"><c:out value="${currentUser.role.label}"/></span>
+                </span>
+                <form method="post" action="<c:url value='/logout'/>">
+                    <sec:csrfInput/>
+                    <button type="submit" class="btn btn-sm btn-ghost">خروج</button>
+                </form>
+            </div>
+        </sec:authorize>
     </div>
 </header>
 <main class="container">

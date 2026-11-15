@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(
-        basePackages = {"com.example.student.repository", "com.example.student.service"},
+        basePackages = {"com.example.student.repository", "com.example.student.service", "com.example.student.security"},
         excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = Controller.class))
 public class AppConfig {
 
@@ -29,8 +29,10 @@ public class AppConfig {
     public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName("org.h2.Driver");
-        // File-based H2 database stored in ~/student-crud-data so data survives restarts
-        ds.setUrl("jdbc:h2:file:~/student-crud-data/studentdb;AUTO_SERVER=TRUE");
+        // File-based H2 database stored in ~/student-crud-data so data survives restarts.
+        // DB_CLOSE_DELAY=-1 keeps the database open between connections (DriverManagerDataSource
+        // opens a new connection each time; otherwise H2 closes and reopens the file every time).
+        ds.setUrl("jdbc:h2:file:~/student-crud-data/studentdb;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1");
         ds.setUsername("sa");
         ds.setPassword("");
         return ds;
