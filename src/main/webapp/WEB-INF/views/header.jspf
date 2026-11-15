@@ -16,7 +16,9 @@
         <a class="brand" href="<c:url value='/'/>">سامانه مدیریت دانشجویان</a>
         <sec:authorize access="isAuthenticated()">
             <nav class="nav">
-                <a href="<c:url value='/students'/>">دانشجویان</a>
+                <sec:authorize access="hasAnyRole('ADMIN', 'VISITOR')">
+                    <a href="<c:url value='/students'/>">دانشجویان</a>
+                </sec:authorize>
                 <a href="<c:url value='/courses'/>">دروس</a>
             </nav>
             <div class="user">

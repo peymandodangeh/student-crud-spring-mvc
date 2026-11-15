@@ -15,17 +15,20 @@
     </dl>
 
     <div class="form-actions">
-        <a class="btn btn-warning" href="<c:url value='/courses/${course.id}/edit'/>">ویرایش</a>
-        <form method="post" action="<c:url value='/courses/${course.id}/delete'/>"
-              onsubmit="return confirm('با حذف درس، ثبت‌نام دانشجویان در آن هم حذف می‌شود. ادامه می‌دهید؟');">
-            <sec:csrfInput/>
-            <button type="submit" class="btn btn-danger">حذف</button>
-        </form>
+        <sec:authorize access="hasRole('ADMIN')">
+            <a class="btn btn-warning" href="<c:url value='/courses/${course.id}/edit'/>">ویرایش</a>
+            <form method="post" action="<c:url value='/courses/${course.id}/delete'/>"
+                  onsubmit="return confirm('با حذف درس، ثبت‌نام دانشجویان در آن هم حذف می‌شود. ادامه می‌دهید؟');">
+                <sec:csrfInput/>
+                <button type="submit" class="btn btn-danger">حذف</button>
+            </form>
+        </sec:authorize>
         <a class="btn btn-link" href="<c:url value='/courses'/>">بازگشت به فهرست</a>
     </div>
 </div>
 
-<%-- Students enrolled in this course (many-to-many) --%>
+<%-- Students enrolled in this course (many-to-many); not shown to students for privacy --%>
+<sec:authorize access="hasAnyRole('ADMIN', 'VISITOR')">
 <div class="section-head">
     <h2>دانشجویان ثبت‌نام شده</h2>
     <span class="badge">${students.size()} نفر</span>
@@ -58,5 +61,6 @@
         </div>
     </c:otherwise>
 </c:choose>
+</sec:authorize>
 
 <%@ include file="footer.jspf" %>

@@ -2,7 +2,10 @@
 
 <div class="page-head">
     <h1>فهرست دانشجویان</h1>
-    <a class="btn btn-primary" href="<c:url value='/students/new'/>">+ افزودن دانشجو</a>
+    <%-- Hiding a button is only for the UI; the real protection is in SecurityConfig --%>
+    <sec:authorize access="hasRole('ADMIN')">
+        <a class="btn btn-primary" href="<c:url value='/students/new'/>">+ افزودن دانشجو</a>
+    </sec:authorize>
 </div>
 
 <c:if test="${not empty message}">
@@ -51,12 +54,14 @@
                         <td><c:out value="${empty s.major ? '-' : s.major}"/></td>
                         <td class="actions">
                             <a class="btn btn-sm" href="<c:url value='/students/${s.id}'/>">مشاهده</a>
-                            <a class="btn btn-sm btn-warning" href="<c:url value='/students/${s.id}/edit'/>">ویرایش</a>
-                            <form method="post" action="<c:url value='/students/${s.id}/delete'/>"
-                                  onsubmit="return confirm('آیا از حذف این دانشجو مطمئن هستید؟');">
-                                <sec:csrfInput/>
-                                <button type="submit" class="btn btn-sm btn-danger">حذف</button>
-                            </form>
+                            <sec:authorize access="hasRole('ADMIN')">
+                                <a class="btn btn-sm btn-warning" href="<c:url value='/students/${s.id}/edit'/>">ویرایش</a>
+                                <form method="post" action="<c:url value='/students/${s.id}/delete'/>"
+                                      onsubmit="return confirm('آیا از حذف این دانشجو مطمئن هستید؟');">
+                                    <sec:csrfInput/>
+                                    <button type="submit" class="btn btn-sm btn-danger">حذف</button>
+                                </form>
+                            </sec:authorize>
                         </td>
                     </tr>
                 </c:forEach>

@@ -1,5 +1,9 @@
 <%@ include file="header.jspf" %>
 
+<%-- Evaluate a rule once and reuse the result (true/false) further down the page --%>
+<sec:authorize access="hasRole('ADMIN')" var="isAdmin"/>
+<sec:authorize access="hasRole('ADMIN')" var="canEnroll"/>
+
 <div class="page-head">
     <h1>مشخصات دانشجو</h1>
 </div>
@@ -26,13 +30,17 @@
     </dl>
 
     <div class="form-actions">
-        <a class="btn btn-warning" href="<c:url value='/students/${student.id}/edit'/>">ویرایش</a>
-        <form method="post" action="<c:url value='/students/${student.id}/delete'/>"
-              onsubmit="return confirm('آیا از حذف این دانشجو مطمئن هستید؟');">
-            <sec:csrfInput/>
-            <button type="submit" class="btn btn-danger">حذف</button>
-        </form>
-        <a class="btn btn-link" href="<c:url value='/students'/>">بازگشت به فهرست</a>
+        <c:if test="${isAdmin}">
+            <a class="btn btn-warning" href="<c:url value='/students/${student.id}/edit'/>">ویرایش</a>
+            <form method="post" action="<c:url value='/students/${student.id}/delete'/>"
+                  onsubmit="return confirm('آیا از حذف این دانشجو مطمئن هستید؟');">
+                <sec:csrfInput/>
+                <button type="submit" class="btn btn-danger">حذف</button>
+            </form>
+        </c:if>
+        <sec:authorize access="hasAnyRole('ADMIN', 'VISITOR')">
+            <a class="btn btn-link" href="<c:url value='/students'/>">بازگشت به فهرست</a>
+        </sec:authorize>
     </div>
 </div>
 
@@ -54,7 +62,7 @@
                     <th>کد درس</th>
                     <th>عنوان</th>
                     <th>واحد</th>
-                    <th class="actions-col">عملیات</th>
+                    <c:if test="${canEnroll}"><th class="actions-col">عملیات</th></c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -63,13 +71,15 @@
                         <td class="ltr"><a href="<c:url value='/courses/${course.id}'/>"><c:out value="${course.code}"/></a></td>
                         <td><c:out value="${course.title}"/></td>
                         <td>${course.units}</td>
-                        <td class="actions">
-                            <form method="post" action="<c:url value='/students/${student.id}/courses/${course.id}/delete'/>"
-                                  onsubmit="return confirm('این درس از برنامه‌ی دانشجو حذف شود؟');">
-                                <sec:csrfInput/>
-                                <button type="submit" class="btn btn-sm btn-danger">حذف درس</button>
-                            </form>
-                        </td>
+                        <c:if test="${canEnroll}">
+                            <td class="actions">
+                                <form method="post" action="<c:url value='/students/${student.id}/courses/${course.id}/delete'/>"
+                                      onsubmit="return confirm('این درس از برنامه‌ی دانشجو حذف شود؟');">
+                                    <sec:csrfInput/>
+                                    <button type="submit" class="btn btn-sm btn-danger">حذف درس</button>
+                                </form>
+                            </td>
+                        </c:if>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -78,23 +88,27 @@
     </c:otherwise>
 </c:choose>
 
-<c:choose>
-    <c:when test="${not empty availableCourses}">
-        <form class="card enroll" method="post" action="<c:url value='/students/${student.id}/courses'/>">
-            <sec:csrfInput/>
-            <label for="courseId">اخذ درس جدید:</label>
-            <select id="courseId" name="courseId" required>
-                <option value="">انتخاب درس...</option>
-                <c:forEach var="course" items="${availableCourses}">
-                    <option value="${course.id}"><c:out value="${course.code} - ${course.title} (${course.units} واحد)"/></option>
-                </c:forEach>
-            </select>
-            <button type="submit" class="btn btn-primary">اخذ درس</button>
-        </form>
-    </c:when>
-    <c:otherwise>
-        <p class="muted">درس دیگری برای اخذ وجود ندارد. <a href="<c:url value='/courses/new'/>">افزودن درس</a></p>
-    </c:otherwise>
-</c:choose>
+<c:if test="${canEnroll}">
+    <c:choose>
+        <c:when test="${not empty availableCourses}">
+            <form class="card enroll" method="post" action="<c:url value='/students/${student.id}/courses'/>">
+                <sec:csrfInput/>
+                <label for="courseId">اخذ درس جدید:</label>
+                <select id="courseId" name="courseId" required>
+                    <option value="">انتخاب درس...</option>
+                    <c:forEach var="course" items="${availableCourses}">
+                        <option value="${course.id}"><c:out value="${course.code} - ${course.title} (${course.units} واحد)"/></option>
+                    </c:forEach>
+                </select>
+                <button type="submit" class="btn btn-primary">اخذ درس</button>
+            </form>
+        </c:when>
+        <c:otherwise>
+            <p class="muted">درس دیگری برای اخذ وجود ندارد.
+                <c:if test="${isAdmin}"><a href="<c:url value='/courses/new'/>">افزودن درس</a></c:if>
+            </p>
+        </c:otherwise>
+    </c:choose>
+</c:if>
 
 <%@ include file="footer.jspf" %>
