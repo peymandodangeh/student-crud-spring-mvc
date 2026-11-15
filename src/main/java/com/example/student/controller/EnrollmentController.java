@@ -5,6 +5,7 @@ import com.example.student.service.EnrollmentException;
 import com.example.student.service.EnrollmentService;
 import com.example.student.service.StudentNotFoundException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 /**
  * Enrolls a student in a course or removes the enrollment.
  * Both actions redirect back to the student's details page.
+ * ADMIN may change any student's courses; a STUDENT only their own.
  */
 @Controller
 @RequestMapping("/students/{studentId}/courses")
@@ -30,6 +32,7 @@ public class EnrollmentController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or #studentId == authentication.principal.studentId")
     public String enroll(@PathVariable long studentId,
                          @RequestParam(name = "courseId", required = false) Long courseId,
                          RedirectAttributes redirect) {
@@ -47,6 +50,7 @@ public class EnrollmentController {
     }
 
     @PostMapping("/{courseId}/delete")
+    @PreAuthorize("hasRole('ADMIN') or #studentId == authentication.principal.studentId")
     public String unenroll(@PathVariable long studentId, @PathVariable long courseId,
                            RedirectAttributes redirect) {
         service.unenroll(studentId, courseId);

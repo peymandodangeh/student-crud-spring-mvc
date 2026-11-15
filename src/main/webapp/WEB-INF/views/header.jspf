@@ -19,6 +19,9 @@
                 <sec:authorize access="hasAnyRole('ADMIN', 'VISITOR')">
                     <a href="<c:url value='/students'/>">دانشجویان</a>
                 </sec:authorize>
+                <sec:authorize access="hasRole('STUDENT')">
+                    <a href="<c:url value='/'/>">پروفایل من</a>
+                </sec:authorize>
                 <a href="<c:url value='/courses'/>">دروس</a>
             </nav>
             <div class="user">

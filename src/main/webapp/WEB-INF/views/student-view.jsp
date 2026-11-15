@@ -2,7 +2,8 @@
 
 <%-- Evaluate a rule once and reuse the result (true/false) further down the page --%>
 <sec:authorize access="hasRole('ADMIN')" var="isAdmin"/>
-<sec:authorize access="hasRole('ADMIN')" var="canEnroll"/>
+<%-- A STUDENT only ever reaches their own page (@PreAuthorize), so here they may pick courses too --%>
+<sec:authorize access="hasAnyRole('ADMIN', 'STUDENT')" var="canEnroll"/>
 
 <div class="page-head">
     <h1>مشخصات دانشجو</h1>

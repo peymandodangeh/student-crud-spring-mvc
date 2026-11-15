@@ -2,6 +2,7 @@ package com.example.student.service;
 
 import com.example.student.model.Student;
 import com.example.student.repository.StudentRepository;
+import com.example.student.security.AccountService;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,9 +13,11 @@ import org.springframework.util.StringUtils;
 public class StudentService {
 
     private final StudentRepository repository;
+    private final AccountService accountService;
 
-    public StudentService(StudentRepository repository) {
+    public StudentService(StudentRepository repository, AccountService accountService) {
         this.repository = repository;
+        this.accountService = accountService;
     }
 
     @Transactional(readOnly = true)
@@ -29,7 +32,10 @@ public class StudentService {
 
     public Student create(Student student) {
         student.setId(null);
-        return repository.insert(student);
+        Student saved = repository.insert(student);
+        // Same transaction: if creating the account fails, the student is not saved either
+        accountService.createStudentAccount(saved);
+        return saved;
     }
 
     public void update(long id, Student student) {
@@ -37,6 +43,7 @@ public class StudentService {
         if (!repository.update(student)) {
             throw new StudentNotFoundException(id);
         }
+        accountService.updateStudentUsername(student);
     }
 
     public void delete(long id) {

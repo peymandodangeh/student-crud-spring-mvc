@@ -10,6 +10,7 @@ import java.util.List;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -57,8 +58,9 @@ public class StudentController {
         return LIST_VIEW;
     }
 
-    /** Read: details of a single student, with enrolled courses. */
+    /** Read: details of a single student, with enrolled courses. A student may only see their own page. */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VISITOR') or #id == authentication.principal.studentId")
     public String view(@PathVariable long id, Model model) {
         model.addAttribute("student", service.get(id));
         List<Course> courses = enrollmentService.coursesOf(id);

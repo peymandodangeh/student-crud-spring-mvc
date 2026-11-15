@@ -20,11 +20,13 @@ import org.springframework.security.web.SecurityFilterChain;
  * <pre>
  *                         ADMIN   VISITOR   STUDENT
  * list/view courses         ✓        ✓         ✓
- * list/view students        ✓        ✓         ✗
+ * list students             ✓        ✓         ✗
+ * view a student            ✓        ✓       own only
  * create/edit/delete        ✓        ✗         ✗
- * enroll in courses         ✓        ✗         ✗
+ * enroll in courses       anyone     ✗       own only
  * </pre>
  * Rules are checked top to bottom; the first matching rule wins.
+ * "own only" cannot be expressed with URLs alone: it is checked by @PreAuthorize in the controllers.
  */
 @Configuration
 @EnableWebSecurity
@@ -38,6 +40,11 @@ public class SecurityConfig {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.ERROR).permitAll()
                         .requestMatchers(antMatcher("/login"), antMatcher("/resources/**")).permitAll()
 
+                        // Enrollment: must come BEFORE the general "POST /students/**" rule below
+                        .requestMatchers(
+                                antMatcher(POST, "/students/*/courses"),
+                                antMatcher(POST, "/students/*/courses/*/delete")).hasAnyRole("ADMIN", "STUDENT")
+
                         // Create / edit / delete: ADMIN only
                         .requestMatchers(
                                 antMatcher(GET, "/students/new"), antMatcher(GET, "/students/*/edit"),
@@ -45,7 +52,8 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher(POST, "/students/**"), antMatcher(POST, "/courses/**")).hasRole("ADMIN")
 
                         // Read-only pages
-                        .requestMatchers(antMatcher(GET, "/students/**")).hasAnyRole("ADMIN", "VISITOR")
+                        .requestMatchers(antMatcher(GET, "/students")).hasAnyRole("ADMIN", "VISITOR")
+                        .requestMatchers(antMatcher(GET, "/students/*")).hasAnyRole("ADMIN", "VISITOR", "STUDENT")
                         .requestMatchers(antMatcher(GET, "/courses/**")).authenticated()
 
                         .anyRequest().authenticated())
